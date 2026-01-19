@@ -21,7 +21,7 @@ const HomePage = () => {
                 <ModeToggle />
             </div>
 
-            <div ref={heroRef} className="relative h-screen w-full flex flex-col justify-center items-center overflow-hidden">
+            <div ref={heroRef} className="relative min-h-[100dvh] w-full flex flex-col justify-start md:justify-center items-center md:overflow-hidden">
                 {/* Background */}
                 <div className="absolute inset-0 z-0 opacity-40 dark:opacity-100 transition-opacity duration-500">
                     <Canvas
@@ -38,7 +38,7 @@ const HomePage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/20 pointer-events-none" />
 
                 {/* Content */}
-                <div className="relative z-10 container mx-auto px-4 md:px-6 h-full flex flex-col justify-center">
+                <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-start md:justify-center pt-28 pb-12 md:py-0">
                     <div className="max-w-5xl mx-auto text-center">
                         <motion.div
                             initial={{ opacity: 0, y: 40 }}
@@ -46,7 +46,7 @@ const HomePage = () => {
                             transition={{ duration: 1.2, delay: 0.2 }}
                             className="mb-6 md:mb-8"
                         >
-                            <h1 className="text-[clamp(2.5rem,5vw,5rem)] font-bold tracking-tight leading-[1.2] py-2 px-4">
+                            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight leading-[1.1] py-2 px-4">
                                 <span className="block bg-clip-text text-transparent bg-gradient-to-b from-foreground via-foreground to-foreground/70 pb-2 drop-shadow-sm">
                                     Pagani Automobili
                                 </span>
@@ -60,14 +60,14 @@ const HomePage = () => {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 1, delay: 0.4 }}
-                            className="mb-10"
+                            className="mb-8 md:mb-10"
                         >
-                            <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed font-light tracking-wide max-w-2xl mx-auto px-4 drop-shadow-sm">
+                            <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 md:mb-10 leading-relaxed font-light tracking-wide max-w-2xl mx-auto px-4 drop-shadow-sm">
                                 Founded in Modena, Italy, Pagani Automobili creates handcrafted hypercars
                                 that blur the line between mechanical engineering and functional art.
                             </p>
 
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 md:gap-12 mb-10">
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 md:gap-12 mb-8 md:mb-10">
                                 <div className="text-center group cursor-default">
                                     <div className="text-2xl md:text-3xl font-bold text-foreground mb-1">3</div>
                                     <div className="text-[10px] md:text-xs text-muted-foreground tracking-[0.2em] uppercase">Model Families</div>
@@ -84,11 +84,11 @@ const HomePage = () => {
                                 </div>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
                                 <Button
                                     size="lg"
                                     onClick={() => navigate('/collection')}
-                                    className="bg-foreground text-background hover:bg-foreground/90 px-10 py-7 text-lg font-medium rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95"
+                                    className="bg-foreground text-background hover:bg-foreground/90 px-8 sm:px-10 py-6 sm:py-7 text-base sm:text-lg font-medium rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 w-full sm:w-auto"
                                 >
                                     Enter the Garage
                                     <ArrowRight className="ml-2 h-5 w-5" />
@@ -97,7 +97,7 @@ const HomePage = () => {
                                     size="lg"
                                     variant="outline"
                                     onClick={() => window.open('https://www.pagani.com/', '_blank')}
-                                    className="px-10 py-7 text-lg font-medium rounded-full border-foreground/20 hover:bg-foreground/5 transition-all duration-300 bg-transparent backdrop-blur-sm"
+                                    className="px-8 sm:px-10 py-6 sm:py-7 text-base sm:text-lg font-medium rounded-full border-foreground/20 hover:bg-foreground/5 transition-all duration-300 bg-transparent backdrop-blur-sm w-full sm:w-auto"
                                 >
                                     Discover the Brand
                                 </Button>
