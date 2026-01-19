@@ -45,8 +45,8 @@ const SketchfabEmbed = ({
     const getOptimizedUrl = (originalUrl: string) => {
         let newUrl = originalUrl
         if (isMobile) {
-            newUrl = newUrl.replace('autostart=1', 'autostart=0')
-            newUrl = newUrl.replace('preload=1', 'preload=0')
+            // Mobile optimization: Keeping autostart enabled as per request
+            newUrl = newUrl.replace('preload=1', 'preload=0') // Keep preloading lazy for data saving, but allow autostart
         }
         return newUrl
     }

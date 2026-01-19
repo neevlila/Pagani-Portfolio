@@ -121,7 +121,7 @@ const ModelDetailPage = () => {
 
                     <motion.div
                         style={{ opacity: heroOpacity }}
-                        className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground animate-bounce"
+                        className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground animate-bounce hidden md:flex"
                     >
                         <span className="text-[10px] uppercase tracking-widest">Scroll to Explore</span>
                         <div className="w-px h-8 md:h-12 bg-gradient-to-b from-foreground to-transparent" />
