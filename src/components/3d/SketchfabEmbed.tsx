@@ -72,7 +72,7 @@ const SketchfabEmbed = ({
             {shouldLoad && !useThumbnail && (
                 <iframe
                     title={title}
-                    className={`absolute left-0 w-full transition-opacity duration-1000 ${hideUi ? 'top-[-30%] h-[160%]' : 'top-0 h-full'}`}
+                    className={`absolute left-0 w-full transition-opacity duration-1000 ${hideUi ? '-top-[60px] h-[calc(100%+120px)]' : 'top-0 h-full'}`}
                     style={{
                         transform: iframeScale !== 1 ? `scale(${iframeScale})` : 'none',
                         transformOrigin: 'center center'

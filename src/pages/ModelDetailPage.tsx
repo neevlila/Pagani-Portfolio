@@ -103,7 +103,7 @@ const ModelDetailPage = () => {
                 <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none z-10" />
 
                 {/* Hero Content Overlay */}
-                <div className="absolute inset-0 z-20 flex flex-col items-center justify-end pb-12 md:pb-20">
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-end pb-24 md:pb-20">
                     <motion.div
                         style={{ opacity: heroOpacity, y: heroY }}
                         className="text-center px-4"

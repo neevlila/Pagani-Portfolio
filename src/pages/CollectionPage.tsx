@@ -97,7 +97,8 @@ const CollectionPage = () => {
                                                 objectPosition: car.imagePosition || 'center center',
                                                 objectFit: car.imageFit || 'cover'
                                             }}
-                                            loading="lazy"
+                                            loading="eager"
+                                            decoding="async"
                                         />
 
                                         <div className="absolute top-4 left-4 z-20">
