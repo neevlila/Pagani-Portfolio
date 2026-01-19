@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
@@ -25,8 +26,16 @@ const CategoryBadge = ({ category }: { category: string }) => {
 const CollectionPage = () => {
     const navigate = useNavigate()
 
+    // Hide scrollbar on mount, restore on unmount (but keep scrolling enabled)
+    useEffect(() => {
+        document.documentElement.classList.add('no-scrollbar')
+        return () => {
+            document.documentElement.classList.remove('no-scrollbar')
+        }
+    }, [])
+
     return (
-        <div className="relative bg-background min-h-screen overflow-hidden selection:bg-primary/20">
+        <div className="relative bg-background min-h-screen selection:bg-primary/20 pb-20">
             {/* Background Depth Elements */}
             <div className="absolute inset-0 bg-background pointer-events-none">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vh] bg-gradient-to-br from-indigo-500/5 via-primary/5 to-rose-500/5 blur-[120px] rounded-full opacity-60 dark:opacity-40" />
@@ -44,107 +53,84 @@ const CollectionPage = () => {
                     </div>
                     <span className="text-sm font-medium tracking-wide">Back to World</span>
                 </Button>
-                <ModeToggle />
+                <div className="flex items-center gap-4">
+                    <ModeToggle />
+                </div>
             </div>
 
-            <div className="relative min-h-screen w-full flex flex-col justify-center items-center py-24 px-4 md:px-8">
+            <div className="relative w-full flex flex-col items-center pt-32 px-4 md:px-8">
                 <div className="container mx-auto max-w-7xl">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
-                        className="text-center mb-16 relative z-10"
+                        className="text-center mb-20 relative z-10"
                     >
-                        <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-4 tracking-tighter">The Private Collection</h2>
-                        <div className="h-1 w-20 bg-primary/50 mx-auto mb-6 rounded-full" />
+                        <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-4 tracking-tighter">The Collection</h2>
+                        <div className="h-0.5 w-16 bg-primary/50 mx-auto mb-6" />
                         <p className="text-muted-foreground text-lg md:text-xl font-light mb-8 max-w-2xl mx-auto leading-relaxed">
-                            A curated selection of automotive masterpieces. <br className="hidden md:block" />
-                            Each vehicle represents a pinnacle of its era.
+                            The union of Art and Science.
                         </p>
-
-                        <div className="flex items-center justify-center gap-6 text-[10px] md:text-xs uppercase tracking-[0.25em] text-muted-foreground/60 font-medium">
-                            <div className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shadow-[0_0_10px_currentColor]" />
-                                <span>Track-only</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                <span>Road-legal</span>
-                            </div>
-                            <div className="flex items-center gap-2 opacity-50">
-                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                                <span>One-off</span>
-                            </div>
-                        </div>
                     </motion.div>
 
-                    <div className="grid grid-cols-1 gap-12 sm:gap-16 relative z-10 w-full">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10 w-full">
                         {cars.map((car, index) => (
                             <motion.div
                                 key={car.id}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 0.8, delay: 0.2 + (index * 0.1) }}
-                                className="flex flex-col items-center"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
                             >
                                 <Card
-                                    className="bg-card/40 backdrop-blur-xl border border-white/10 dark:border-white/5 overflow-hidden cursor-pointer group hover:border-primary/20 transition-all duration-500 w-full max-w-5xl shadow-2xl hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_20px_60px_-15px_rgba(255,255,255,0.02)] rounded-[2rem]"
+                                    className="bg-card/40 backdrop-blur-md border border-border/40 overflow-hidden cursor-pointer group hover:border-primary/30 transition-all duration-500 h-full flex flex-col shadow-lg hover:shadow-2xl rounded-3xl"
                                     onClick={() => navigate(`/collection/${car.slug}`)}
                                 >
-                                    <div className="grid grid-cols-1 lg:grid-cols-5 h-full min-h-[500px]">
-                                        {/* Visual Side */}
-                                        <div className="lg:col-span-3 relative overflow-hidden bg-gradient-to-br from-black/5 to-black/20 dark:from-white/[0.02] dark:to-transparent min-h-[300px] lg:min-h-full">
-                                            <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 group-hover:scale-105">
-                                                {/* Overlay for interaction hint */}
-                                                <div className="absolute inset-0 z-10 bg-transparent group-hover:bg-black/5 dark:group-hover:bg-white/5 transition-colors pointer-events-none" />
-                                                <SketchfabEmbed
-                                                    hideUi={true}
-                                                    url={car.sketchfabUrl}
-                                                    title={car.name}
-                                                    className="pointer-events-none opacity-90 grayscale-[0.2] group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
-                                                    thumbnailImage={car.image}
-                                                    useThumbnail={true}
-                                                />
-                                            </div>
+                                    {/* Image Container - Aspect Ratio 4:3 */}
+                                    <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted">
+                                        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 transition-opacity group-hover:opacity-40" />
 
-                                            {/* Category Badge */}
-                                            <div className="absolute top-6 left-6 z-20">
-                                                <CategoryBadge category={car.category} />
+                                        <img
+                                            src={car.image}
+                                            alt={car.name}
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                            style={{
+                                                objectPosition: car.imagePosition || 'center center',
+                                                objectFit: car.imageFit || 'cover'
+                                            }}
+                                            loading="lazy"
+                                        />
+
+                                        <div className="absolute top-4 left-4 z-20">
+                                            <CategoryBadge category={car.category} />
+                                        </div>
+                                    </div>
+
+                                    {/* Content Container */}
+                                    <CardContent className="p-6 md:p-8 flex flex-col flex-grow relative bg-gradient-to-br from-card/50 to-transparent">
+                                        <div className="mb-4">
+                                            <div className="flex justify-between items-baseline mb-2">
+                                                <span className="text-[10px] tracking-[0.2em] uppercase text-primary font-bold">{car.year}</span>
+                                                <span className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground">{car.production}</span>
                                             </div>
+                                            <h3 className="text-2xl font-bold text-card-foreground tracking-tight leading-tight group-hover:text-primary transition-colors duration-300">{car.name}</h3>
                                         </div>
 
-                                        {/* Info Side */}
-                                        <CardContent className="lg:col-span-2 p-8 md:p-12 flex flex-col justify-center relative bg-gradient-to-br from-card/50 to-card/10">
-                                            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent lg:hidden" />
-                                            <div className="absolute left-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-border to-transparent hidden lg:block" />
+                                        <p className="text-muted-foreground text-sm font-light leading-relaxed line-clamp-3 mb-6 flex-grow">
+                                            {car.tagline}
+                                        </p>
 
-                                            <div className="mb-auto">
-                                                <p className="text-primary font-bold mb-2 tracking-[0.2em] uppercase text-xs">{car.year} Edition</p>
-                                                <h3 className="text-4xl md:text-5xl font-bold text-card-foreground mb-4 tracking-tighter leading-[0.9]">{car.name}</h3>
-                                                <p className="text-muted-foreground text-lg font-light leading-relaxed">{car.tagline}</p>
+                                        <div className="pt-4 border-t border-border/30 flex items-center justify-between mt-auto">
+                                            <div className="flex gap-4 text-xs font-medium text-muted-foreground/80">
+                                                <span>{car.horsepower}</span>
+                                                <span className="w-px h-4 bg-border/50" />
+                                                <span>{car.topSpeed}</span>
                                             </div>
 
-                                            <div className="mt-8 space-y-6">
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Engine</p>
-                                                        <p className="font-semibold text-foreground text-sm sm:text-base">{car.engine}</p>
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Output</p>
-                                                        <p className="font-semibold text-foreground text-sm sm:text-base">{car.horsepower}</p>
-                                                    </div>
-                                                </div>
-
-                                                <div className="pt-6 border-t border-border/40 flex items-center justify-between group/btn">
-                                                    <span className="text-sm font-medium text-foreground group-hover/btn:text-primary transition-colors">Explore Model</span>
-                                                    <div className="h-10 w-10 rounded-full border border-foreground/10 flex items-center justify-center group-hover/btn:bg-primary group-hover/btn:border-primary group-hover/btn:text-primary-foreground transition-all duration-300">
-                                                        <ArrowRight className="h-4 w-4 transform group-hover/btn:translate-x-0.5 transition-transform" />
-                                                    </div>
-                                                </div>
+                                            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-foreground group-hover:translate-x-1 transition-transform duration-300">
+                                                Explore <ArrowRight className="w-3 h-3 text-primary" />
                                             </div>
-                                        </CardContent>
-                                    </div>
+                                        </div>
+                                    </CardContent>
                                 </Card>
                             </motion.div>
                         ))}

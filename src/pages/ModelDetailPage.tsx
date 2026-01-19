@@ -44,67 +44,92 @@ const ModelDetailPage = () => {
         }
     }, [car, navigate])
 
+    // Initial Scroll Position: Half Preview / Half Details
+    useEffect(() => {
+        // Scroll to ~55% of the viewport height so details peek up (45% visual / 55% details)
+        const handleInitialScroll = () => {
+            const targetScroll = window.innerHeight * 0.55
+            window.scrollTo({
+                top: targetScroll,
+                behavior: 'instant' // Instant jump, no animation
+            })
+        }
+
+        // Small timeout to ensure DOM is ready
+        // Small timeout to ensure DOM is ready
+        const timer = setTimeout(handleInitialScroll, 100) // Increased timeout slightly
+        return () => clearTimeout(timer)
+    }, [slug]) // Re-run when model changes
+
     if (!car) return null
 
     return (
         <div ref={containerRef} className="relative bg-background min-h-[200vh]">
             {/* Navigation */}
-            <div className="fixed top-6 left-6 z-50 flex items-center gap-4 mix-blend-difference text-white">
+            <div className="fixed top-6 left-6 z-50 flex items-center gap-4 pointer-events-none">
                 <Button
                     variant="ghost"
                     onClick={() => navigate('/collection')}
-                    className="hover:bg-white/10 text-white gap-2 border border-white/20 rounded-full px-6 backdrop-blur-md transition-all hover:pl-4 group"
+                    className="pointer-events-auto hover:bg-background/40 hover:backdrop-blur-md text-foreground gap-2 border border-foreground/20 rounded-full px-6 transition-all hover:pl-4 group shadow-lg"
                 >
                     <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
                     Back to Collection
                 </Button>
             </div>
 
-            <div className="fixed top-6 right-6 z-50 mix-blend-difference">
+            <div className="fixed top-6 right-6 z-50">
                 <ModeToggle />
             </div>
 
-            {/* Fixed Background 3D Model */}
-            <div className="fixed inset-0 z-0 h-screen w-full">
+            {/* Fixed Background 3D Model - Mobile: 55vh, Desktop: 100vh */}
+            <div className="fixed inset-0 z-0 h-[55vh] md:h-screen w-full">
                 <div className="absolute inset-0 bg-background/5 pointer-events-none z-10 sm:hidden" /> {/* Mobile overlay protection */}
+
+                {/* Corner Vignettes to hide Sketchfab UI */}
+                <div className="absolute top-0 left-0 w-96 h-40 bg-background z-10 [mask-image:radial-gradient(ellipse_at_top_left,black_40%,transparent_70%)] pointer-events-auto" />
+                <div className="absolute top-0 right-0 w-40 h-40 bg-background z-10 [mask-image:radial-gradient(ellipse_at_top_right,black_40%,transparent_70%)] pointer-events-auto" />
+
                 <SketchfabEmbed
                     className="rounded-none shadow-none"
                     hideUi={true}
                     url={car.sketchfabUrl}
                     title={car.name}
                     isVisible={isModelVisible}
+                    iframeScale={(car.iframeScale || 1) * 0.9} // Slight global zoom out for better framing
+                    useThumbnail={false} // Always try 3D on detail page, but component handles lazy load
                 />
 
                 {/* Gradient overlays for readability */}
-                <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
-                <div className="absolute inset-x-0 bottom-0 h-60 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-background to-transparent pointer-events-none z-10" />
+                <div className="absolute inset-x-0 bottom-0 h-80 bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none z-10" />
             </div>
 
             {/* Hero Content Overlay */}
             <motion.div
                 style={{ opacity: heroOpacity, y: heroY }}
-                className="fixed inset-0 z-10 flex flex-col items-center justify-end pb-32 pointer-events-none"
+                className="fixed inset-0 z-10 flex flex-col items-center justify-end pb-32 pointer-events-none md:h-screen h-[55vh]"
             >
                 <div className="text-center px-4">
-                    <p className="text-white/80 font-medium tracking-[0.3em] uppercase mb-4 text-sm sm:text-base drop-shadow-md">
+                    <p className="text-muted-foreground font-medium tracking-[0.3em] uppercase mb-4 text-sm sm:text-base drop-shadow-md">
                         {car.year} / {car.production}
                     </p>
-                    <h1 className="text-5xl md:text-8xl font-bold text-white tracking-tighter drop-shadow-2xl mb-2">
+                    <h1 className="text-5xl md:text-8xl font-bold text-foreground tracking-tighter drop-shadow-2xl mb-2">
                         {car.name}
                     </h1>
-                    <p className="text-white/90 text-xl font-light tracking-wide max-w-xl mx-auto drop-shadow-lg">
+                    <p className="text-foreground/90 text-xl font-light tracking-wide max-w-xl mx-auto drop-shadow-lg">
                         {car.tagline}
                     </p>
                 </div>
 
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50 animate-bounce">
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground animate-bounce">
                     <span className="text-[10px] uppercase tracking-widest">Scroll to Explore</span>
-                    <div className="w-px h-12 bg-gradient-to-b from-white to-transparent" />
+                    <div className="w-px h-12 bg-gradient-to-b from-foreground to-transparent" />
                 </div>
             </motion.div>
 
             {/* Spacer for 3D View - Full Screen */}
-            <div className="relative z-10 h-[100vh] pointer-events-none" />
+            {/* Spacer for 3D View - Desktop 100vh, Mobile 55vh */}
+            <div className="relative z-10 h-[55vh] md:h-[100vh] pointer-events-none" />
 
             {/* Section 2: Details */}
             <div className="relative z-20 min-h-screen bg-background border-t border-border/20 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">

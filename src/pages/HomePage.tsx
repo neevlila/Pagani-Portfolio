@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, useInView } from 'framer-motion'
 import { Canvas } from '@react-three/fiber'
@@ -14,14 +14,22 @@ const HomePage = () => {
     const heroRef = useRef(null)
     const isHeroVisible = useInView(heroRef, { margin: "100px" })
 
+    // Hide scrollbar on mount, restore on unmount (but keep scrolling enabled)
+    useEffect(() => {
+        document.documentElement.classList.add('no-scrollbar')
+        return () => {
+            document.documentElement.classList.remove('no-scrollbar')
+        }
+    }, [])
+
     return (
         <div className="relative bg-background text-foreground transition-colors duration-300">
             {/* Hero Section */}
-            <div className="absolute top-4 right-4 z-50 mix-blend-difference">
+            <div className="absolute top-4 right-4 z-50">
                 <ModeToggle />
             </div>
 
-            <div ref={heroRef} className="relative min-h-[100dvh] w-full flex flex-col justify-start md:justify-center items-center md:overflow-hidden">
+            <div ref={heroRef} className="relative min-h-screen w-full flex flex-col justify-start md:justify-center items-center overflow-hidden md:overflow-visible">
                 {/* Background */}
                 <div className="absolute inset-0 z-0 opacity-40 dark:opacity-100 transition-opacity duration-500">
                     <Canvas
@@ -46,7 +54,7 @@ const HomePage = () => {
                             transition={{ duration: 1.2, delay: 0.2 }}
                             className="mb-6 md:mb-8"
                         >
-                            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight leading-[1.1] py-2 px-4">
+                            <h1 className="text-[clamp(2rem,6vw,5rem)] md:text-7xl font-bold tracking-tight leading-[1.1] py-2 px-4 break-words hyphens-auto">
                                 <span className="block bg-clip-text text-transparent bg-gradient-to-b from-foreground via-foreground to-foreground/70 pb-2 drop-shadow-sm">
                                     Pagani Automobili
                                 </span>
@@ -152,8 +160,9 @@ const HomePage = () => {
             <footer className="relative z-10 bg-background border-t border-border py-12">
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-                        <div className="text-muted-foreground text-sm tracking-wide">
-                            © Pagani Automobili S.p.A. — Modena, Italy
+                        <div className="text-muted-foreground text-sm tracking-wide flex flex-col gap-1.5">
+                            <span>© Pagani Automobili S.p.A. — Modena, Italy</span>
+                            <span>Concept, Design & Development by Neev Lila — Academic Project</span>
                         </div>
                         <div className="flex gap-8">
                             {[

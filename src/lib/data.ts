@@ -18,6 +18,7 @@ export interface Car {
     image?: string
     imageFit?: "cover" | "contain" | "fill"
     imagePosition?: string
+    iframeScale?: number
 }
 
 export const cars: Car[] = [
@@ -119,7 +120,10 @@ export const cars: Car[] = [
         weight: "≈1,250 kg",
         acceleration: "0–100 km/h ≈ 3.7s",
         sketchfabUrl: "https://sketchfab.com/models/a712dc2575684822900515bcca72dd50/embed?autospin=1&autostart=1&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0",
-        image: "/Pagani Zonda S 7.3.jpg"
+        image: "/Pagani Zonda S 7.3.jpg",
+        imageFit: "cover",
+        imagePosition: "center 70%",
+        iframeScale: 0.8
     },
     {
         id: "zonda-f",
@@ -140,6 +144,7 @@ export const cars: Car[] = [
         sketchfabUrl: "https://sketchfab.com/models/8f0a79fc092c44abb199221a2abed0ca/embed?autospin=1&autostart=1&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0",
         image: "/Pagani Zonda F.jpg",
         imageFit: "cover",
-        imagePosition: "center"
+        imagePosition: "center 60%",
+        iframeScale: 0.8
     }
 ]

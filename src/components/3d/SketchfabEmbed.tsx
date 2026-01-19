@@ -18,46 +18,71 @@ const SketchfabEmbed = ({
     title = "Pagani Model",
     isVisible = true,
     useThumbnail = false,
-    thumbnailImage
-}: SketchfabEmbedProps) => {
+    thumbnailImage,
+    iframeScale = 1
+}: SketchfabEmbedProps & { iframeScale?: number }) => {
     const containerRef = useRef<HTMLDivElement>(null)
-    const inView = useInView(containerRef, { margin: "200px" }) // Preload when close
+    const inView = useInView(containerRef, { margin: "200px" })
+    const [isMobile, setIsMobile] = React.useState(false)
+    const [shouldLoad, setShouldLoad] = React.useState(false)
 
-    // Combined visibility state: Parent control AND viewport visibility
-    // If using thumbnail, we always render the image (cheap)
-    const shouldRenderIframe = !useThumbnail && isVisible && inView
+    React.useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768)
+        }
+        checkMobile()
+        window.addEventListener('resize', checkMobile)
+        return () => window.removeEventListener('resize', checkMobile)
+    }, [])
 
-    // Extract ID for thumbnail
-    // URL format: https://sketchfab.com/models/[ID]/embed...
+    React.useEffect(() => {
+        if (isVisible && inView && !useThumbnail) {
+            setShouldLoad(true)
+        }
+    }, [isVisible, inView, useThumbnail])
+
+    // Process URL for mobile
+    const getOptimizedUrl = (originalUrl: string) => {
+        let newUrl = originalUrl
+        if (isMobile) {
+            newUrl = newUrl.replace('autostart=1', 'autostart=0')
+            newUrl = newUrl.replace('preload=1', 'preload=0')
+        }
+        return newUrl
+    }
+
     const modelId = url.split('/models/')[1]?.split('/')[0]
     const thumbnailUrl = thumbnailImage || (modelId ? `https://img.sketchfab.com/i/${modelId}/max.jpg` : null)
 
     return (
         <div ref={containerRef} className={`relative h-full w-full overflow-hidden bg-transparent ${className}`}>
-            {useThumbnail && thumbnailUrl ? (
-                <div className="absolute inset-0 bg-black/5">
+            {/* Thumbnail View */}
+            {(useThumbnail && thumbnailUrl) || (!shouldLoad && thumbnailUrl) ? (
+                <div className="absolute inset-0 bg-black/5 dark:bg-white/5">
                     <img
                         src={thumbnailUrl}
                         alt={title}
                         className="w-full h-full object-cover transition-opacity duration-500"
                         loading="lazy"
                     />
-                    {/* Optional play button overlay if needed, but for background use keep clean */}
                 </div>
-            ) : shouldRenderIframe ? (
+            ) : null}
+
+            {/* Iframe View */}
+            {shouldLoad && !useThumbnail && (
                 <iframe
                     title={title}
-                    className={`absolute left-0 w-full ${hideUi ? 'top-[-100px] h-[calc(100%+200px)]' : 'top-0 h-full'}`}
+                    className={`absolute left-0 w-full transition-opacity duration-1000 ${hideUi ? 'top-[-100px] h-[calc(100%+200px)]' : 'top-0 h-full'}`}
+                    style={{
+                        transform: iframeScale !== 1 ? `scale(${iframeScale})` : 'none',
+                        transformOrigin: 'center center'
+                    }}
                     frameBorder="0"
                     allowFullScreen
                     allow="autoplay; fullscreen; xr-spatial-tracking"
-                    src={url}
+                    src={getOptimizedUrl(url)}
                     loading="lazy"
                 />
-            ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/20">
-                    {/* Placeholder or nothing */}
-                </div>
             )}
         </div>
     )
