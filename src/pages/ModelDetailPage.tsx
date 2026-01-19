@@ -23,12 +23,11 @@ const ModelDetailPage = () => {
     const [isModelVisible, setIsModelVisible] = useState(true)
 
     useMotionValueEvent(scrollY, "change", (latest) => {
-        // Hide model when details section covers it (approx 1 viewport height)
-        // Adding a small buffer to ensure smooth transition
-        const viewportHeight = window.innerHeight
-        if (latest > viewportHeight && isModelVisible) {
+        // Hide model when details section covers most of it (scrolled past hero)
+        const transitionPoint = window.innerHeight * 0.57
+        if (latest > transitionPoint && isModelVisible) {
             setIsModelVisible(false)
-        } else if (latest < viewportHeight && !isModelVisible) {
+        } else if (latest < transitionPoint && !isModelVisible) {
             setIsModelVisible(true)
         }
     })
@@ -44,27 +43,25 @@ const ModelDetailPage = () => {
         }
     }, [car, navigate])
 
-    // Initial Scroll Position: Half Preview / Half Details
+    // Initial Scroll Position: 43% down (so details cover bottom 43%, revealing 57% hero)
+    // User can scroll UP to see full hero.
     useEffect(() => {
-        // Scroll to ~55% of the viewport height so details peek up (45% visual / 55% details)
         const handleInitialScroll = () => {
-            const targetScroll = window.innerHeight * 0.55
+            const targetScroll = window.innerHeight * 0.43
             window.scrollTo({
                 top: targetScroll,
-                behavior: 'instant' // Instant jump, no animation
+                behavior: 'instant'
             })
         }
 
-        // Small timeout to ensure DOM is ready
-        // Small timeout to ensure DOM is ready
-        const timer = setTimeout(handleInitialScroll, 100) // Increased timeout slightly
+        const timer = setTimeout(handleInitialScroll, 50)
         return () => clearTimeout(timer)
-    }, [slug]) // Re-run when model changes
+    }, [slug])
 
     if (!car) return null
 
     return (
-        <div ref={containerRef} className="relative bg-background min-h-[200vh]">
+        <div ref={containerRef} className="relative bg-background overflow-x-hidden min-h-[200vh]">
             {/* Navigation */}
             <div className="fixed top-6 left-6 z-50 flex items-center gap-4 pointer-events-none">
                 <Button
@@ -81,58 +78,62 @@ const ModelDetailPage = () => {
                 <ModeToggle />
             </div>
 
-            {/* Fixed Background 3D Model - Mobile: 55vh, Desktop: 100vh */}
-            <div className="fixed inset-0 z-0 h-[55vh] md:h-screen w-full">
-                <div className="absolute inset-0 bg-background/5 pointer-events-none z-10 sm:hidden" /> {/* Mobile overlay protection */}
+            {/* Fixed Background 3D Model (Full Screen) */}
+            <div className="fixed inset-0 z-0 h-screen w-full pointer-events-none">
+                <div className="absolute inset-0 bg-background/5 z-10 sm:hidden" /> {/* Mobile overlay protection */}
 
                 {/* Corner Vignettes to hide Sketchfab UI */}
-                <div className="absolute top-0 left-0 w-96 h-40 bg-background z-10 [mask-image:radial-gradient(ellipse_at_top_left,black_40%,transparent_70%)] pointer-events-auto" />
-                <div className="absolute top-0 right-0 w-40 h-40 bg-background z-10 [mask-image:radial-gradient(ellipse_at_top_right,black_40%,transparent_70%)] pointer-events-auto" />
+                <div className="absolute top-0 left-0 w-96 h-40 bg-background/0 z-20 pointer-events-auto" />
+                <div className="absolute top-0 right-0 w-40 h-40 bg-background/0 z-20 pointer-events-auto" />
 
-                <SketchfabEmbed
-                    className="rounded-none shadow-none"
-                    hideUi={true}
-                    url={car.sketchfabUrl}
-                    title={car.name}
-                    isVisible={isModelVisible}
-                    iframeScale={(car.iframeScale || 1) * 0.9} // Slight global zoom out for better framing
-                    useThumbnail={false} // Always try 3D on detail page, but component handles lazy load
-                />
+                <div className="pointer-events-auto w-full h-full"> {/* Interactive wrapper for Sketchfab */}
+                    <SketchfabEmbed
+                        className="rounded-none shadow-none z-0"
+                        hideUi={true}
+                        url={car.sketchfabUrl}
+                        title={car.name}
+                        isVisible={isModelVisible}
+                        iframeScale={1}
+                        useThumbnail={false}
+                    />
+                </div>
 
                 {/* Gradient overlays for readability */}
                 <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-background to-transparent pointer-events-none z-10" />
-                <div className="absolute inset-x-0 bottom-0 h-80 bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none z-10" />
+                <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none z-10" />
+
+                {/* Hero Content Overlay */}
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-end pb-12 md:pb-20">
+                    <motion.div
+                        style={{ opacity: heroOpacity, y: heroY }}
+                        className="text-center px-4"
+                    >
+                        <p className="text-muted-foreground font-medium tracking-[0.3em] uppercase mb-4 text-sm sm:text-base drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] dark:drop-shadow-none">
+                            {car.year} / {car.production}
+                        </p>
+                        <h1 className="text-5xl md:text-8xl font-bold text-foreground tracking-tighter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] dark:drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)] mb-2">
+                            {car.name}
+                        </h1>
+                        <p className="text-foreground/90 text-xl font-light tracking-wide max-w-xl mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] dark:drop-shadow-lg">
+                            {car.tagline}
+                        </p>
+                    </motion.div>
+
+                    <motion.div
+                        style={{ opacity: heroOpacity }}
+                        className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground animate-bounce"
+                    >
+                        <span className="text-[10px] uppercase tracking-widest">Scroll to Explore</span>
+                        <div className="w-px h-8 md:h-12 bg-gradient-to-b from-foreground to-transparent" />
+                    </motion.div>
+                </div>
             </div>
 
-            {/* Hero Content Overlay */}
-            <motion.div
-                style={{ opacity: heroOpacity, y: heroY }}
-                className="fixed inset-0 z-10 flex flex-col items-center justify-end pb-32 pointer-events-none md:h-screen h-[55vh]"
-            >
-                <div className="text-center px-4">
-                    <p className="text-muted-foreground font-medium tracking-[0.3em] uppercase mb-4 text-sm sm:text-base drop-shadow-md">
-                        {car.year} / {car.production}
-                    </p>
-                    <h1 className="text-5xl md:text-8xl font-bold text-foreground tracking-tighter drop-shadow-2xl mb-2">
-                        {car.name}
-                    </h1>
-                    <p className="text-foreground/90 text-xl font-light tracking-wide max-w-xl mx-auto drop-shadow-lg">
-                        {car.tagline}
-                    </p>
-                </div>
-
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground animate-bounce">
-                    <span className="text-[10px] uppercase tracking-widest">Scroll to Explore</span>
-                    <div className="w-px h-12 bg-gradient-to-b from-foreground to-transparent" />
-                </div>
-            </motion.div>
-
             {/* Spacer for 3D View - Full Screen */}
-            {/* Spacer for 3D View - Desktop 100vh, Mobile 55vh */}
-            <div className="relative z-10 h-[55vh] md:h-[100vh] pointer-events-none" />
+            <div className="relative z-10 h-[100vh] pointer-events-none" />
 
             {/* Section 2: Details */}
-            <div className="relative z-20 min-h-screen bg-background border-t border-border/20 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+            <div className="relative z-20 bg-background border-t border-border/20 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
                 <div className="container mx-auto px-4 py-24">
                     <div className="max-w-4xl mx-auto">
                         <motion.div

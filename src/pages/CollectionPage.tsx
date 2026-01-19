@@ -58,7 +58,7 @@ const CollectionPage = () => {
                 </div>
             </div>
 
-            <div className="relative w-full flex flex-col items-center pt-32 px-4 md:px-8">
+            <div className="relative w-full flex flex-col items-center pt-24 px-4 md:px-8">
                 <div className="container mx-auto max-w-7xl">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -69,7 +69,7 @@ const CollectionPage = () => {
                         <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-4 tracking-tighter">The Collection</h2>
                         <div className="h-0.5 w-16 bg-primary/50 mx-auto mb-6" />
                         <p className="text-muted-foreground text-lg md:text-xl font-light mb-8 max-w-2xl mx-auto leading-relaxed">
-                            The union of Art and Science.
+                            Precision machines. Defined by intent.
                         </p>
                     </motion.div>
 

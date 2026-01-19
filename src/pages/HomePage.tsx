@@ -46,7 +46,7 @@ const HomePage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/20 pointer-events-none" />
 
                 {/* Content */}
-                <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-start md:justify-center pt-28 pb-12 md:py-0">
+                <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-start md:justify-center pt-20 pb-12 md:py-0">
                     <div className="max-w-5xl mx-auto text-center">
                         <motion.div
                             initial={{ opacity: 0, y: 40 }}
