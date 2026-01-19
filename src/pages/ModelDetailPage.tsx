@@ -1,16 +1,19 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ModeToggle } from '@/components/mode-toggle'
 import SketchfabEmbed from '@/components/3d/SketchfabEmbed'
-import { carData } from '@/lib/data'
+import { cars } from '@/lib/data'
 
 const ModelDetailPage = () => {
     const { slug } = useParams()
     const containerRef = useRef<HTMLDivElement>(null)
     const navigate = useNavigate()
+
+    const car = cars.find(c => c.slug === slug)
+
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"]
@@ -19,6 +22,15 @@ const ModelDetailPage = () => {
     // Fade out the hero text as we scroll down
     const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
     const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -50])
+
+    // Redirect if car not found
+    useEffect(() => {
+        if (!car) {
+            navigate('/collection')
+        }
+    }, [car, navigate])
+
+    if (!car) return null
 
     return (
         <div ref={containerRef} className="relative bg-background min-h-[200vh]">
@@ -41,7 +53,12 @@ const ModelDetailPage = () => {
             {/* Fixed Background 3D Model */}
             <div className="fixed inset-0 z-0 h-screen w-full">
                 <div className="absolute inset-0 bg-background/5 pointer-events-none z-10 sm:hidden" /> {/* Mobile overlay protection */}
-                <SketchfabEmbed className="rounded-none shadow-none" hideUi={true} />
+                <SketchfabEmbed
+                    className="rounded-none shadow-none"
+                    hideUi={true}
+                    url={car.sketchfabUrl}
+                    title={car.name}
+                />
 
                 {/* Gradient overlays for readability */}
                 <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
@@ -55,13 +72,13 @@ const ModelDetailPage = () => {
             >
                 <div className="text-center px-4">
                     <p className="text-white/80 font-medium tracking-[0.3em] uppercase mb-4 text-sm sm:text-base drop-shadow-md">
-                        {carData.year} / {carData.production}
+                        {car.year} / {car.production}
                     </p>
                     <h1 className="text-5xl md:text-8xl font-bold text-white tracking-tighter drop-shadow-2xl mb-2">
-                        {carData.name}
+                        {car.name}
                     </h1>
                     <p className="text-white/90 text-xl font-light tracking-wide max-w-xl mx-auto drop-shadow-lg">
-                        {carData.tagline}
+                        {car.tagline}
                     </p>
                 </div>
 
@@ -87,7 +104,7 @@ const ModelDetailPage = () => {
                             {/* Header */}
                             <div className="flex flex-col md:flex-row items-baseline justify-between border-b border-border pb-8 gap-4">
                                 <h2 className="text-4xl font-bold text-foreground">Heritage & Specifications</h2>
-                                <span className="font-mono text-muted-foreground">REF: {slug?.toUpperCase() || "ZR-2009"}</span>
+                                <span className="font-mono text-muted-foreground">REF: {car.slug.toUpperCase()}</span>
                             </div>
 
                             {/* Specs Grid */}
@@ -98,15 +115,15 @@ const ModelDetailPage = () => {
                                         <div className="space-y-4">
                                             <div className="flex justify-between items-center py-2 border-b border-border/50">
                                                 <span className="text-muted-foreground">Engine</span>
-                                                <span className="font-medium text-foreground text-lg">{carData.engine}</span>
+                                                <span className="font-medium text-foreground text-lg">{car.engine}</span>
                                             </div>
                                             <div className="flex justify-between items-center py-2 border-b border-border/50">
                                                 <span className="text-muted-foreground">Horsepower</span>
-                                                <span className="font-medium text-foreground text-lg">{carData.horsepower}</span>
+                                                <span className="font-medium text-foreground text-lg">{car.horsepower}</span>
                                             </div>
                                             <div className="flex justify-between items-center py-2 border-b border-border/50">
-                                                <span className="text-muted-foreground">Torque</span>
-                                                <span className="font-medium text-foreground text-lg">710 Nm</span>
+                                                <span className="text-muted-foreground">Transmission</span>
+                                                <span className="font-medium text-foreground text-lg">{car.transmission}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -116,15 +133,15 @@ const ModelDetailPage = () => {
                                         <div className="space-y-4">
                                             <div className="flex justify-between items-center py-2 border-b border-border/50">
                                                 <span className="text-muted-foreground">Top Speed</span>
-                                                <span className="font-medium text-foreground text-lg">{carData.topSpeed}</span>
+                                                <span className="font-medium text-foreground text-lg">{car.topSpeed}</span>
                                             </div>
                                             <div className="flex justify-between items-center py-2 border-b border-border/50">
                                                 <span className="text-muted-foreground">0-100 km/h</span>
-                                                <span className="font-medium text-foreground text-lg">{carData.acceleration}</span>
+                                                <span className="font-medium text-foreground text-lg">{car.acceleration}</span>
                                             </div>
                                             <div className="flex justify-between items-center py-2 border-b border-border/50">
                                                 <span className="text-muted-foreground">Weight</span>
-                                                <span className="font-medium text-foreground text-lg">{carData.weight}</span>
+                                                <span className="font-medium text-foreground text-lg">{car.weight}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -134,17 +151,17 @@ const ModelDetailPage = () => {
                                     <div>
                                         <h4 className="text-sm uppercase tracking-widest text-muted-foreground mb-4 font-semibold">Legacy</h4>
                                         <p className="text-lg leading-relaxed text-muted-foreground font-light">
-                                            {carData.description}
+                                            {car.description}
                                         </p>
                                     </div>
 
                                     <div className="bg-muted/30 p-8 rounded-xl border border-border/50">
-                                        <h4 className="text-base font-bold text-foreground mb-4">The Nürburgring Record</h4>
+                                        <h4 className="text-base font-bold text-foreground mb-4">The Art of Engineering</h4>
                                         <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-                                            On June 30, 2010, the Pagani Zonda R claimed a new record for production-derived cars at the Nürburgring Nordschleife, completing the circuit in just 6:47.50.
+                                            {car.name} is a testament to Horacio Pagani's philosophy that art and science can walk hand in hand. Every component is machined from solid aluminum or crafted from carbon fiber.
                                         </p>
                                         <div className="flex items-center gap-2 text-primary text-sm font-semibold">
-                                            <span className="uppercase tracking-wider">Historical Milestone</span>
+                                            <span className="uppercase tracking-wider">Uncompromised Design</span>
                                         </div>
                                     </div>
                                 </div>
