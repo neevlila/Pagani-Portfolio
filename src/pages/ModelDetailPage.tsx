@@ -1,6 +1,6 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ModeToggle } from '@/components/mode-toggle'
@@ -17,6 +17,20 @@ const ModelDetailPage = () => {
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"]
+    })
+
+    const { scrollY } = useScroll()
+    const [isModelVisible, setIsModelVisible] = useState(true)
+
+    useMotionValueEvent(scrollY, "change", (latest) => {
+        // Hide model when details section covers it (approx 1 viewport height)
+        // Adding a small buffer to ensure smooth transition
+        const viewportHeight = window.innerHeight
+        if (latest > viewportHeight && isModelVisible) {
+            setIsModelVisible(false)
+        } else if (latest < viewportHeight && !isModelVisible) {
+            setIsModelVisible(true)
+        }
     })
 
     // Fade out the hero text as we scroll down
@@ -58,6 +72,7 @@ const ModelDetailPage = () => {
                     hideUi={true}
                     url={car.sketchfabUrl}
                     title={car.name}
+                    isVisible={isModelVisible}
                 />
 
                 {/* Gradient overlays for readability */}

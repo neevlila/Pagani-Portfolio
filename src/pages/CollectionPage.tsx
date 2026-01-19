@@ -102,6 +102,8 @@ const CollectionPage = () => {
                                                     url={car.sketchfabUrl}
                                                     title={car.name}
                                                     className="pointer-events-none opacity-90 grayscale-[0.2] group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
+                                                    thumbnailImage={car.image}
+                                                    useThumbnail={true}
                                                 />
                                             </div>
 

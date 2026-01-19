@@ -1,5 +1,6 @@
+import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import { Canvas } from '@react-three/fiber'
 import { ArrowRight, Zap, Gauge, Settings, Instagram, Twitter, Linkedin } from 'lucide-react'
 import { useTheme } from '@/components/theme-provider'
@@ -10,6 +11,8 @@ import LiquidBackground from '@/components/3d/LiquidBackground'
 const HomePage = () => {
     const { theme } = useTheme()
     const navigate = useNavigate()
+    const heroRef = useRef(null)
+    const isHeroVisible = useInView(heroRef, { margin: "100px" })
 
     return (
         <div className="relative bg-background text-foreground transition-colors duration-300">
@@ -18,10 +21,13 @@ const HomePage = () => {
                 <ModeToggle />
             </div>
 
-            <div className="relative h-screen w-full flex flex-col justify-center items-center overflow-hidden">
+            <div ref={heroRef} className="relative h-screen w-full flex flex-col justify-center items-center overflow-hidden">
                 {/* Background */}
                 <div className="absolute inset-0 z-0 opacity-40 dark:opacity-100 transition-opacity duration-500">
-                    <Canvas camera={{ position: [0, 0, 30], fov: 35 }}>
+                    <Canvas
+                        camera={{ position: [0, 0, 30], fov: 35 }}
+                        frameloop={isHeroVisible ? "always" : "never"}
+                    >
                         <ambientLight intensity={0.3} />
                         <spotLight position={[20, 20, 20]} intensity={2} />
                         <LiquidBackground theme={theme} />

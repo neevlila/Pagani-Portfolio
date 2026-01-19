@@ -15,6 +15,9 @@ export interface Car {
     weight: string
     acceleration: string
     sketchfabUrl: string
+    image?: string
+    imageFit?: "cover" | "contain" | "fill"
+    imagePosition?: string
 }
 
 export const cars: Car[] = [
@@ -35,7 +38,8 @@ export const cars: Car[] = [
         drivetrain: "RWD",
         weight: "1,070 kg",
         acceleration: "0-100 km/h in 2.7s",
-        sketchfabUrl: "https://sketchfab.com/models/6cf8c75a54794fdf895c2d005cbde426/embed?autospin=1&autostart=1&preload=1&dnt=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0"
+        sketchfabUrl: "https://sketchfab.com/models/6cf8c75a54794fdf895c2d005cbde426/embed?autospin=1&autostart=1&preload=1&dnt=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0",
+        image: "/Pagani Zonda R.png"
     },
     {
         id: "huayra-r",
@@ -53,7 +57,8 @@ export const cars: Car[] = [
         drivetrain: "RWD",
         weight: "≈ 1,050 kg",
         acceleration: "0–100 km/h ≈ 3.0s",
-        sketchfabUrl: "https://sketchfab.com/models/ee59b888788e4d768dfeda86998be1a0/embed?autospin=1&autostart=1&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0"
+        sketchfabUrl: "https://sketchfab.com/models/ee59b888788e4d768dfeda86998be1a0/embed?autospin=1&autostart=1&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0",
+        image: "/Pagani Huayra R.jpeg"
     },
 
     // Road-Legal (Modern)
@@ -73,7 +78,8 @@ export const cars: Car[] = [
         drivetrain: "RWD",
         weight: "1,350 kg",
         acceleration: "0-100 km/h in 3.2s",
-        sketchfabUrl: "https://sketchfab.com/models/c2d61a9f53a54a229547bb76e4b71e25/embed?autospin=1&autostart=1&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0"
+        sketchfabUrl: "https://sketchfab.com/models/c2d61a9f53a54a229547bb76e4b71e25/embed?autospin=1&autostart=1&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0",
+        image: "/Pagani Huayra.jpg"
     },
     {
         id: "utopia",
@@ -91,7 +97,8 @@ export const cars: Car[] = [
         drivetrain: "RWD",
         weight: "≈1,280 kg",
         acceleration: "0–100 km/h ≈ 2.8s",
-        sketchfabUrl: "https://sketchfab.com/models/4787fa901db1454bb971ba83739d1de6/embed?autospin=1&autostart=1&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0"
+        sketchfabUrl: "https://sketchfab.com/models/4787fa901db1454bb971ba83739d1de6/embed?autospin=1&autostart=1&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0",
+        image: "/Pagani-Utopia.jpg"
     },
 
     // Legacy Road Cars
@@ -111,7 +118,8 @@ export const cars: Car[] = [
         drivetrain: "RWD",
         weight: "≈1,250 kg",
         acceleration: "0–100 km/h ≈ 3.7s",
-        sketchfabUrl: "https://sketchfab.com/models/a712dc2575684822900515bcca72dd50/embed?autospin=1&autostart=1&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0"
+        sketchfabUrl: "https://sketchfab.com/models/a712dc2575684822900515bcca72dd50/embed?autospin=1&autostart=1&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0",
+        image: "/Pagani Zonda S 7.3.jpg"
     },
     {
         id: "zonda-f",
@@ -129,6 +137,9 @@ export const cars: Car[] = [
         drivetrain: "RWD",
         weight: "≈1,230 kg",
         acceleration: "0–100 km/h ≈ 3.6s",
-        sketchfabUrl: "https://sketchfab.com/models/8f0a79fc092c44abb199221a2abed0ca/embed?autospin=1&autostart=1&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0"
+        sketchfabUrl: "https://sketchfab.com/models/8f0a79fc092c44abb199221a2abed0ca/embed?autospin=1&autostart=1&preload=1&transparent=1&ui_infos=0&ui_controls=0&ui_stop=0&ui_watermark=0",
+        image: "/Pagani Zonda F.jpg",
+        imageFit: "cover",
+        imagePosition: "center"
     }
 ]

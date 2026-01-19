@@ -18,10 +18,13 @@ const LiquidBackground = ({ theme }: LiquidBackgroundProps) => {
     }), [])
 
     // Target colors based on theme
-    const isDark = theme === 'dark'
-    // Dark mode: Deep Blue/Black | Light mode: Soft Platinum/Grey
-    const targetColor1 = isDark ? new THREE.Vector3(0.005, 0.005, 0.01) : new THREE.Vector3(0.92, 0.92, 0.94)
-    const targetColor2 = isDark ? new THREE.Vector3(0.02, 0.02, 0.05) : new THREE.Vector3(0.96, 0.96, 0.98)
+    const { targetColor1, targetColor2 } = useMemo(() => {
+        const isDark = theme === 'dark'
+        return {
+            targetColor1: isDark ? new THREE.Vector3(0.005, 0.005, 0.01) : new THREE.Vector3(0.92, 0.92, 0.94),
+            targetColor2: isDark ? new THREE.Vector3(0.02, 0.02, 0.05) : new THREE.Vector3(0.96, 0.96, 0.98)
+        }
+    }, [theme])
 
     useFrame((state) => {
         const { clock, mouse } = state
